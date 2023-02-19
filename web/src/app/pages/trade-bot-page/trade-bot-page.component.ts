@@ -12,6 +12,7 @@ import { decideLimitPrice } from 'src/app/services/limit-price-decider';
 import { decideBuyOrSell } from 'src/app/services/buy-or-sell-decider';
 import { StrangulatorService } from 'src/app/strangulator.service';
 import { CizablePutsScanner } from 'src/app/cizable-puts-scanner.service';
+import { CizableCallsScanner } from 'src/app/cizable-calls-scanner.service';
 
 
 @Component({
@@ -31,10 +32,11 @@ export class TradeBotPageComponent {
   etfTickers = []
   // memeStonkTickers = ['GME', 'AMC', 'MVIS', 'VIAC', 'RKT', 'AMD', 'MSFT', 'PLTR', 'TLRY', 'NIO', 'UBER', 'APHA', 'EBAY', 'TSLA']
   memeStonkTickers = []
-  bestInClassTickers = ['GOOG', 'AAPL', 'AMZN', 'HD', 'WMT', 'MA', 'V', 'NKE', 'GOOGL', 'ATBI', 'VZ' ]
+  bestInClassTickers = ['GOOG', 'AAPL', 'AMZN', 'HD', 'WMT', 'MA', 'V', 'NKE', 'GOOGL', 'ATBI', 'VZ']
   // bestInClassTickers = []
   // highIvs = ['SIVB', 'SJR', 'CHTR', 'COST', 'HD', 'WMT', 'V', 'ADBE', 'NKE', 'GOOGL', 'TROW', 'KMX', 'D', 'FDX', 'MRNA', 'GSK', 'VALE', 'EL', 'SHW' ]
-  highIvs = ['UNH', 'LAZR', 'NVDA', 'MSFT', 'META', 'SGFY', 'PLTK', 'E', 'CHKP', 'NEP', 'UNIT', 'GGAL', 'CYH', 'W', 'ALLY', 'GB', 'AFRM', 'APST', 'WE', 'SOXL', 'MSTR', 'LYFT', 'SMG', 'FLNC', 'QS', 'SBNY', 'RIOT']
+  // highPrices = ['UNH', 'BKNG', 'CMG', 'INTU', 'COST', 'ADBE', 'MTD', 'NVDA', 'MSFT', 'META', 'SGFY', 'MKL', 'MELI', 'ORLY', 'FCNCA', 'REGN', 'TDG', 'EQIX', 'BLK', 'FICO', 'GWW', 'ASML', 'AVGO', 'ULTA', 'HUM', 'DE', 'LMT', 'TMO', 'PLTK', 'E', 'CHKP', 'NEP', 'UNIT', 'GGAL', 'CYH', 'SOXL', 'SBNY', 'RIOT']
+  highPrices = []
 
   rowsInTickerTable = 0;
   arrayOfRowIndicies = [];
@@ -44,10 +46,12 @@ export class TradeBotPageComponent {
   strangulations = [];
   shortCrunchedCondors = [];
   cizablePutsGroupedBySymbol = [];
+  cizableCallsGroupedBySymbol = [];
 
   constructor(private http: HttpClient,
     private tdApiSvc: TdApiService,
     private cizablePutsScanner: CizablePutsScanner,
+    private cizableCallsScanner: CizableCallsScanner,
   ) { }
 
   access_token = ''
@@ -61,7 +65,7 @@ export class TradeBotPageComponent {
       ...this.etfTickers,
       ...this.memeStonkTickers,
       ...this.bestInClassTickers,
-      ...this.highIvs
+      ...this.highPrices
     ]
 
     this.rowsInTickerTable = Math.max(
@@ -69,7 +73,7 @@ export class TradeBotPageComponent {
       this.etfTickers.length,
       this.memeStonkTickers.length,
       this.bestInClassTickers.length,
-      this.highIvs.length,
+      this.highPrices.length,
     );
 
     this.arrayOfRowIndicies = Array.from(Array(this.rowsInTickerTable).keys())
@@ -92,29 +96,50 @@ export class TradeBotPageComponent {
         if (optionChain['underlying']) {
 
           console.log('1a')
-          
-          const cizablePutsForSymbol = this.cizablePutsScanner.getCizablePutsForSymbol(
+
+          // const cizablePutsForSymbol = this.cizablePutsScanner.getCizablePutsForSymbol(
+          //   optionChain['symbol'],
+          //   optionChain['putExpDateMap'],
+          //   optionChain['underlying']['last']
+          // )
+
+          // this.cizablePutsGroupedBySymbol.push(cizablePutsForSymbol);
+
+          const cizableCallsForSymbol = this.cizableCallsScanner.getCizableCallsForSymbol(
             optionChain['symbol'],
-            optionChain['putExpDateMap'],
+            optionChain['callExpDateMap'],
             optionChain['underlying']['last']
-            )
-            console.log('1b')
-            
-            this.cizablePutsGroupedBySymbol.push(cizablePutsForSymbol);
-            
-            this.cizablePutsGroupedBySymbol = this.cizablePutsGroupedBySymbol.filter(cizablePutsForSymbol => {
-              return cizablePutsForSymbol.length > 0;
-            })
-            
-            this.cizablePutsGroupedBySymbol = this.cizablePutsGroupedBySymbol.sort((a, b) => {
-              return a[0].intrinsic_profit_per_doller_midpt < b[0].intrinsic_profit_per_doller_midpt ? 1 : -1;
-            })
-            
-            console.log('the gud ones are..... ', this.cizablePutsGroupedBySymbol);
-            console.log('cizable puts!');
-            console.log('1c')
-          }
-          
+          )
+          console.log('1b')
+
+          this.cizableCallsGroupedBySymbol.push(cizableCallsForSymbol);
+
+          this.cizableCallsGroupedBySymbol = this.cizableCallsGroupedBySymbol.filter(cizableCallsForSymbol => {
+            return cizableCallsForSymbol.length > 0;
+          })
+
+          this.cizablePutsGroupedBySymbol = this.cizablePutsGroupedBySymbol.sort((a, b) => {
+            // return a[0].intrinsic_profit_ask < b[0].intrinsic_profit_ask ? 1 : -1;
+            return a[0].intrinsic_profit_midpt < b[0].intrinsic_profit_midpt ? 1 : -1;
+            return a[0].intrinsic_profit_per_doller_midpt < b[0].intrinsic_profit_per_doller_midpt ? 1 : -1;
+          })
+
+          this.cizableCallsGroupedBySymbol = this.cizableCallsGroupedBySymbol.filter(cizableCallsForSymbol => {
+            return cizableCallsForSymbol.length > 0;
+          })
+
+          this.cizableCallsGroupedBySymbol = this.cizableCallsGroupedBySymbol.sort((a, b) => {
+            // return a[0].intrinsic_profit_ask < b[0].intrinsic_profit_ask ? 1 : -1;
+            return a[0].intrinsic_profit_midpt < b[0].intrinsic_profit_midpt ? 1 : -1;
+            return a[0].intrinsic_profit_per_doller_midpt < b[0].intrinsic_profit_per_doller_midpt ? 1 : -1;
+          })
+
+          console.log('the gud puts are..... ', this.cizablePutsGroupedBySymbol);
+          console.log('the gud calls are..... ', this.cizableCallsGroupedBySymbol);
+          console.log('cizable puts!');
+          console.log('1c')
+        }
+
       })
 
     }

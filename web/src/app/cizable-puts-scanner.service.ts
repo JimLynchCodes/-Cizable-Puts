@@ -5,8 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class CizablePutsScanner {
 
-  MIN_STRIKE_DISTANCE = 0.5;
-
   constructor() { }
 
   getCizablePutsForSymbol(symbol: string, putExpDateMap: any, underlyingLast: number) {
@@ -54,10 +52,10 @@ export class CizablePutsScanner {
                     intrinsic_profit_per_doller_midpt,
                     // intrinsic_profit_ask,
                     // intrinsic_profit_per_doller_ask,
-                    underlyingLast,
-                    optionBidPrice,
-                    optionAskPrice,
-                    optionLastPrice,
+                    // underlyingLast,
+                    // optionBidPrice,
+                    // optionAskPrice,
+                    // optionLastPrice,
                     optionMidPointPrice,
                     strikeMinusUnderlyingLast
                   }
@@ -74,7 +72,8 @@ export class CizablePutsScanner {
 
     puts.sort((a, b) => {
       // return a.intrinsic_profit < b.intrinsic_profit ? 1 : -1;
-      // return a.intrinsic_profit_midpt < b.intrinsic_profit_midpt ? 1 : -1;
+      // return a.intrinsic_profit_ask < b.intrinsic_profit_ask ? 1 : -1;
+      return a.intrinsic_profit_midpt < b.intrinsic_profit_midpt ? 1 : -1;
       return a.intrinsic_profit_per_doller_midpt < b.intrinsic_profit_per_doller_midpt ? 1 : -1;
     })
 
