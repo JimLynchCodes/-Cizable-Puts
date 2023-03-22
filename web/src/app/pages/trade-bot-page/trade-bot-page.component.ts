@@ -32,11 +32,11 @@ export class TradeBotPageComponent {
   etfTickers = []
   // memeStonkTickers = ['GME', 'AMC', 'MVIS', 'VIAC', 'RKT', 'AMD', 'MSFT', 'PLTR', 'TLRY', 'NIO', 'UBER', 'APHA', 'EBAY', 'TSLA']
   memeStonkTickers = []
-  bestInClassTickers = ['GOOG', 'AAPL', 'AMZN', 'HD', 'WMT', 'MA', 'V', 'NKE', 'GOOGL', 'ATBI', 'VZ']
-  // bestInClassTickers = []
+  // bestInClassTickers = ['GOOG', 'AAPL', 'AMZN', 'HD', 'WMT', 'MA', 'V', 'NKE', 'GOOGL', 'ATBI', 'VZ']
+  bestInClassTickers = []
   // highIvs = ['SIVB', 'SJR', 'CHTR', 'COST', 'HD', 'WMT', 'V', 'ADBE', 'NKE', 'GOOGL', 'TROW', 'KMX', 'D', 'FDX', 'MRNA', 'GSK', 'VALE', 'EL', 'SHW' ]
-  // highPrices = ['UNH', 'BKNG', 'CMG', 'INTU', 'COST', 'ADBE', 'MTD', 'NVDA', 'MSFT', 'META', 'SGFY', 'MKL', 'MELI', 'ORLY', 'FCNCA', 'REGN', 'TDG', 'EQIX', 'BLK', 'FICO', 'GWW', 'ASML', 'AVGO', 'ULTA', 'HUM', 'DE', 'LMT', 'TMO', 'PLTK', 'E', 'CHKP', 'NEP', 'UNIT', 'GGAL', 'CYH', 'SOXL', 'SBNY', 'RIOT']
-  highPrices = []
+  highPrices = ['UNH', 'BKNG', 'CMG', 'INTU', 'COST', 'ADBE', 'MTD', 'NVDA', 'MSFT', 'META', 'SGFY', 'MKL', 'MELI', 'ORLY', 'FCNCA', 'REGN', 'TDG', 'EQIX', 'BLK', 'FICO', 'GWW', 'ASML', 'AVGO', 'ULTA', 'HUM', 'DE', 'LMT', 'TMO', 'PLTK', 'E', 'CHKP', 'NEP', 'UNIT', 'GGAL', 'CYH', 'SOXL', 'SBNY', 'RIOT']
+  // highPrices = []
 
   rowsInTickerTable = 0;
   arrayOfRowIndicies = [];
